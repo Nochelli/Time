@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#0f172a">
+
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<title>Controle de Horas</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+    background:#000000;
+
+    color:white;
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:20px;
+}
+
+.container{
+
+    width:380px;
+
+    max-width:100%;
+
+    background:#0d0d0d;
+
+    padding:25px;
+
+    border-radius:22px;
+
+    box-shadow:0 0 25px rgba(61, 60, 60, 0.35);
+}
+
+h1{
+
+    text-align:center;
+
+    margin-bottom:25px;
+}
+
+.cards{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
+}
+
+.card{
+
+    background:#262323;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    transition:0.2s;
+}
+
+.card:hover{
+
+    transform:scale(1.02);
+}
+
+.valor{
+
+    font-size:30px;
+
+    margin:15px 0;
+
+    font-weight:bold;
+}
+
+button{
+
+    width:100%;
+
+    border:none;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:#1d1b1b;
+
+    color:white;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:0.2s;
+}
+
+button:hover{
+
+    background:#000000;
+}
+
+.total{
+
+    margin-top:20px;
+
+    background:#000000;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    text-align:center;
+}
+
+
+
+#totalGeral{
+
+    font-size:34px;
+
+    margin-top:10px;
+}
+
+.reset-btn{
+
+    margin-top:20px;
+
+    background:#ef4444;
+}
+
+.reset-btn:hover{
+
+    background:#dc2626;
+}
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,0.7);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:20px;
+}
+
+.modal-content{
+
+    width:320px;
+
+    max-width:100%;
+
+    background:#2b2c2e;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    text-align:center;
+}
+
+
+.time-selector{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin:20px 0;
+}
+
+.box{
+
+    flex:1;
+
+    min-width:0;
+}
+
+.controls{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:6px;
+
+    width:100%;
+}
+
+.box button{
+
+    width:38px;
+
+    height:38px;
+
+    min-width:38px;
+
+    padding:0;
+
+    font-size:20px;
+
+    flex-shrink:0;
+}
+
+.number{
+
+    width:45px;
+
+    text-align:center;
+
+    font-size:22px;
+
+    font-weight:bold;
+}
+.box h3{
+
+    margin-bottom:10px;
+}
+
+.controls{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    width:100%;
+}
+
+.box button{
+
+    min-width:40px;
+
+    height:40px;
+
+    padding:0;
+
+    flex-shrink:0;
+
+    font-size:22px;
+}
+
+.number{
+
+    width:50px;
+
+    text-align:center;
+
+    font-size:24px;
+
+    overflow:hidden;
+}
+
+.confirmar{
+
+    margin-top:15px;
+}
+
+.reset-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:20px;
+}
+
+.historico{
+
+    margin-top:20px;
+
+    background:#131313;
+
+    border-radius:18px;
+
+    padding:20px;
+}
+
+.historico h2{
+
+    margin-bottom:15px;
+
+    text-align:center;
+}
+
+#listaHistorico{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    max-height:250px;
+
+    overflow-y:auto;
+}
+
+.item-historico{
+
+    background:#000000;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    font-size:14px;
+
+    line-height:1.5;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Controle de Horas</h1>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h2>LDC</h2>
+
+            <div class="valor" id="ldcValor">
+                00:00
+            </div>
+
+            <button onclick="abrirModal('ldc')">
+                Adicionar
+            </button>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Campo</h2>
+
+            <div class="valor" id="campoValor">
+                00:00
+            </div>
+
+            <button onclick="abrirModal('campo')">
+                Adicionar
+            </button>
+
+        </div>
+
+        <div class="card">
+
+            <h2>COLIH</h2>
+
+            <div class="valor" id="colihValor">
+                00:00
+            </div>
+
+            <button onclick="abrirModal('colih')">
+                Adicionar
+            </button>
+
+        </div>
+
+    </div>
+    <div class="historico">
+
+    <h2>Histórico</h2>
+
+    <div id="listaHistorico">
+        Nenhum registro ainda.
+    </div>
+        </div>
+
+
+    <div class="total">
+
+        <h2>Total Geral</h2>
+
+        <div id="totalGeral">
+            00:00
+        </div>
+
+        <button class="reset-btn" onclick="abrirReset()">
+            Zerar Tudo
+        </button>
+
+
+
+</div>
+
+</div>
+
+
+
+<!-- MODAL ADICIONAR -->
+
+<div class="modal" id="modal">
+
+    <div class="modal-content">
+
+        <h2>Adicionar Tempo</h2>
+
+        <div class="time-selector">
+
+            <div class="box">
+
+                <h3>Horas</h3>
+
+                <div class="controls">
+
+                    <button onclick="alterarHora(-1)">
+                        -
+                    </button>
+
+                    <div class="number" id="horas">
+                        0
+                    </div>
+
+                    <button onclick="alterarHora(1)">
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="box">
+
+                <h3>Min</h3>
+
+                <div class="controls">
+
+                    <button onclick="alterarMin(-5)">
+                        -
+                    </button>
+
+                    <div class="number" id="minutos">
+                        0
+                    </div>
+
+                    <button onclick="alterarMin(5)">
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <button class="confirmar" onclick="confirmarTempo()">
+            Confirmar
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MODAL RESET -->
+
+<div class="modal" id="resetModal">
+
+    <div class="modal-content">
+
+        <h2>Deseja zerar tudo?</h2>
+
+        <p style="margin:20px 0;">
+            Essa ação não poderá ser desfeita.
+        </p>
+
+        <div class="reset-buttons">
+
+            <button onclick="fecharReset()">
+                Cancelar
+            </button>
+
+            <button
+                style="background:#ef4444;"
+                onclick="zerarTudo()"
+            >
+                Confirmar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let dados = {
+
+    ldc:0,
+    campo:0,
+    colih:0
+};
+
+let tipoAtual = "";
+
+let horas = 0;
+
+let minutos = 0;
+
+function abrirModal(tipo){
+
+    tipoAtual = tipo;
+
+    horas = 0;
+
+    minutos = 0;
+
+    atualizarModal();
+
+    document.getElementById("modal")
+        .style.display = "flex";
+}
+
+function alterarHora(valor){
+
+    horas += valor;
+
+    if(horas < 0){
+
+        horas = 0;
+    }
+
+    atualizarModal();
+}
+
+function alterarMin(valor){
+
+    minutos += valor;
+
+    if(minutos < 0){
+
+        minutos = 0;
+    }
+
+    if(minutos > 55){
+
+        minutos = 55;
+    }
+
+    atualizarModal();
+}
+
+function atualizarModal(){
+
+    document.getElementById("horas")
+        .innerText = horas;
+
+    document.getElementById("minutos")
+        .innerText = minutos;
+}
+
+function confirmarTempo(){
+
+    let total =
+        (horas * 60) + minutos;
+
+    dados[tipoAtual] += total;
+
+    atualizarTela();
+
+    fecharModal();
+}
+
+function fecharModal(){
+
+    document.getElementById("modal")
+        .style.display = "none";
+}
+
+function formatarTempo(totalMin){
+
+    let h =
+        Math.floor(totalMin / 60);
+
+    let m =
+        totalMin % 60;
+
+    h = String(h).padStart(2, '0');
+
+    m = String(m).padStart(2, '0');
+
+    return `${h}:${m}`;
+}
+
+function atualizarTela(){
+
+    document.getElementById("ldcValor")
+        .innerText =
+        formatarTempo(dados.ldc);
+
+    document.getElementById("campoValor")
+        .innerText =
+        formatarTempo(dados.campo);
+
+    document.getElementById("colihValor")
+        .innerText =
+        formatarTempo(dados.colih);
+
+    let total =
+        dados.ldc +
+        dados.campo +
+        dados.colih;
+
+    document.getElementById("totalGeral")
+        .innerText =
+        formatarTempo(total);
+}
+
+function abrirReset(){
+
+    document.getElementById("resetModal")
+        .style.display = "flex";
+}
+
+function fecharReset(){
+
+    document.getElementById("resetModal")
+        .style.display = "none";
+}
+
+function zerarTudo(){
+
+    dados.ldc = 0;
+
+    dados.campo = 0;
+
+    dados.colih = 0;
+
+    atualizarTela();
+
+    fecharReset();
+}
+
+let historico = [];
+
+function confirmarTempo(){
+
+    let total =
+        (horas * 60) + minutos;
+
+    dados[tipoAtual] += total;
+
+    let agora = new Date();
+
+    let data =
+        agora.toLocaleDateString('pt-BR');
+
+    let horaAtual =
+        agora.toLocaleTimeString('pt-BR', {
+            hour:'2-digit',
+            minute:'2-digit'
+        });
+
+    let registro = {
+
+        tipo: tipoAtual.toUpperCase(),
+
+        tempo:
+            formatarTempo(total),
+
+        data,
+
+        hora: horaAtual
+    };
+
+    historico.unshift(registro);
+
+    atualizarHistorico();
+
+    atualizarTela();
+
+    fecharModal();
+}
+
+function atualizarHistorico(){
+
+    let lista =
+        document.getElementById("listaHistorico");
+
+    lista.innerHTML = "";
+
+    if(historico.length === 0){
+
+        lista.innerHTML =
+            "Nenhum registro ainda.";
+
+        return;
+    }
+
+    historico.forEach(item => {
+
+        lista.innerHTML += `
+
+            <div class="item-historico">
+
+                <strong>${item.tipo}</strong>
+                → +${item.tempo}
+
+                <br>
+
+                ${item.data}
+                às
+                ${item.hora}
+
+            </div>
+
+        `;
+    });
+}
+
+historico = [];
+
+atualizarHistorico();
+
+const CACHE_NAME = "controle-horas-v1";
+
+const FILES = [
+    "./",
+    "./index.html",
+    "./manifest.json",
+    "./sw.js",
+    "./icon-192.png",
+    "./icon-512.png"
+];
+
+self.addEventListener("install", e => {
+
+    e.waitUntil(
+        caches.open(CACHE_NAME).then(cache => {
+            return cache.addAll(FILES);
+        })
+    );
+});
+
+self.addEventListener("fetch", e => {
+
+    e.respondWith(
+        caches.match(e.request).then(res => {
+            return res || fetch(e.request);
+        })
+    );
+});
+
+if ("serviceWorker" in navigator) {
+
+    navigator.serviceWorker.register("sw.js")
+        .then(() => {
+            console.log("PWA ativado");
+        })
+        .catch(err => {
+            console.log("Erro no SW", err);
+        });
+}
+
+</script>
+
+</body>
+</html>
