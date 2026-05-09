@@ -52,7 +52,7 @@ body{
 
     border-radius:22px;
 
-    box-shadow:0 0 25px rgba(61, 60, 60, 0.35);
+    box-shadow:0 0 25px rgba(166, 4, 247, 0.697);
 }
 
 h1{
@@ -80,6 +80,7 @@ h1{
     padding:18px;
 
     transition:0.2s;
+    
 }
 
 .card:hover{
@@ -358,39 +359,20 @@ button:hover{
 <p id="mesAtual" style="text-align: center; margin-top: -20px; margin-bottom: 25px; color: #94a3b8; text-transform: uppercase; font-weight: bold;"></p>
 
 
-    <div class="cards">
-
-        <div class="card">
-
-        <div class="card">
-
-            <h2>CAMPO</h2>
-
-            <div class="valor" id="campoValor">
-                00:00
-            </div>
-
-            <button onclick="abrirModal('campo')">
-                Adicionar
-            </button>
-
-        </div>
-</div>
-        <div class="card">
-
-            <h2>CRÉDITO</h2>
-
-            <div class="valor" id="creditoValor">
-                00:00
-            </div>
-
-            <button onclick="abrirModal('credito')">
-                Adicionar
-            </button>
-
-        </div>
-
+<div class="cards">
+    <div class="card">
+        <h2>CAMPO</h2>
+        <div class="valor" id="campoValor">00:00</div>
+        <button onclick="abrirModal('campo')">Adicionar</button>
     </div>
+
+    <div class="card">
+        <h2>CRÉDITO</h2>
+        <div class="valor" id="creditoValor">00:00</div>
+        <button onclick="abrirModal('credito')">Adicionar</button>
+    </div>
+</div>
+
     <div class="historico">
 
     <h2>Histórico</h2>
