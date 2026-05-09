@@ -354,26 +354,17 @@ button:hover{
 <div class="container">
 
     <h1>Controle de Horas</h1>
+<!-- Adicione a linha abaixo -->
+<p id="mesAtual" style="text-align: center; margin-top: -20px; margin-bottom: 25px; color: #94a3b8; text-transform: uppercase; font-weight: bold;"></p>
+
 
     <div class="cards">
 
         <div class="card">
 
-            <h2>LDC</h2>
-
-            <div class="valor" id="ldcValor">
-                00:00
-            </div>
-
-            <button onclick="abrirModal('ldc')">
-                Adicionar
-            </button>
-
-        </div>
-
         <div class="card">
 
-            <h2>Campo</h2>
+            <h2>CAMPO</h2>
 
             <div class="valor" id="campoValor">
                 00:00
@@ -384,16 +375,16 @@ button:hover{
             </button>
 
         </div>
-
+</div>
         <div class="card">
 
-            <h2>COLIH</h2>
+            <h2>CRÉDITO</h2>
 
-            <div class="valor" id="colihValor">
+            <div class="valor" id="creditoValor">
                 00:00
             </div>
 
-            <button onclick="abrirModal('colih')">
+            <button onclick="abrirModal('credito')">
                 Adicionar
             </button>
 
@@ -529,9 +520,8 @@ button:hover{
 
 let dados = {
 
-    ldc:0,
     campo:0,
-    colih:0
+    credito:0
 };
 
 let tipoAtual = "";
@@ -627,22 +617,17 @@ function formatarTempo(totalMin){
 
 function atualizarTela(){
 
-    document.getElementById("ldcValor")
-        .innerText =
-        formatarTempo(dados.ldc);
-
     document.getElementById("campoValor")
         .innerText =
         formatarTempo(dados.campo);
 
-    document.getElementById("colihValor")
+    document.getElementById("creditoValor")
         .innerText =
-        formatarTempo(dados.colih);
+        formatarTempo(dados.credito);
 
     let total =
-        dados.ldc +
         dados.campo +
-        dados.colih;
+        dados.credito;
 
     document.getElementById("totalGeral")
         .innerText =
@@ -663,11 +648,9 @@ function fecharReset(){
 
 function zerarTudo(){
 
-    dados.ldc = 0;
-
     dados.campo = 0;
 
-    dados.colih = 0;
+    dados.credito = 0;
 
     atualizarTela();
 
@@ -794,6 +777,20 @@ if ("serviceWorker" in navigator) {
             console.log("Erro no SW", err);
         });
 }
+
+function exibirMes() {
+    const meses = [
+        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ];
+    const data = new Date();
+    const nomeMes = meses[data.getMonth()];
+    document.getElementById("mesAtual").innerText = nomeMes;
+}
+
+// Chame a função para ela rodar assim que a página carregar
+exibirMes();
+
 
 </script>
 
