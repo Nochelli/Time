@@ -517,281 +517,148 @@ button:hover{
 </div>
 
 <script>
-
-let dados = {
-
-    campo:0,
-    credito:0
+// Tenta carregar dados salvos ou inicia do zero
+let dados = JSON.parse(localStorage.getItem('controle_dados')) || {
+    campo: 0,
+    credito: 0
 };
 
+let historico = JSON.parse(localStorage.getItem('controle_historico')) || [];
+
 let tipoAtual = "";
-
 let horas = 0;
-
 let minutos = 0;
 
-function abrirModal(tipo){
+// Função para salvar tudo no localStorage
+function salvarNoNavegador() {
+    localStorage.setItem('controle_dados', JSON.stringify(dados));
+    localStorage.setItem('controle_historico', JSON.stringify(historico));
+}
 
+function abrirModal(tipo) {
     tipoAtual = tipo;
-
     horas = 0;
-
     minutos = 0;
-
     atualizarModal();
-
-    document.getElementById("modal")
-        .style.display = "flex";
+    document.getElementById("modal").style.display = "flex";
 }
 
-function alterarHora(valor){
-
+function alterarHora(valor) {
     horas += valor;
-
-    if(horas < 0){
-
-        horas = 0;
-    }
-
+    if (horas < 0) horas = 0;
     atualizarModal();
 }
 
-function alterarMin(valor){
-
+function alterarMin(valor) {
     minutos += valor;
-
-    if(minutos < 0){
-
-        minutos = 0;
-    }
-
-    if(minutos > 55){
-
-        minutos = 55;
-    }
-
+    if (minutos < 0) minutos = 0;
+    if (minutos > 55) minutos = 55;
     atualizarModal();
 }
 
-function atualizarModal(){
-
-    document.getElementById("horas")
-        .innerText = horas;
-
-    document.getElementById("minutos")
-        .innerText = minutos;
+function atualizarModal() {
+    document.getElementById("horas").innerText = horas;
+    document.getElementById("minutos").innerText = minutos;
 }
 
-function confirmarTempo(){
-
-    let total =
-        (horas * 60) + minutos;
-
-    dados[tipoAtual] += total;
-
-    atualizarTela();
-
-    fecharModal();
+function fecharModal() {
+    document.getElementById("modal").style.display = "none";
 }
 
-function fecharModal(){
-
-    document.getElementById("modal")
-        .style.display = "none";
+function formatarTempo(totalMin) {
+    let h = Math.floor(totalMin / 60);
+    let m = totalMin % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
 
-function formatarTempo(totalMin){
-
-    let h =
-        Math.floor(totalMin / 60);
-
-    let m =
-        totalMin % 60;
-
-    h = String(h).padStart(2, '0');
-
-    m = String(m).padStart(2, '0');
-
-    return `${h}:${m}`;
+function atualizarTela() {
+    document.getElementById("campoValor").innerText = formatarTempo(dados.campo);
+    document.getElementById("creditoValor").innerText = formatarTempo(dados.credito);
+    
+    let total = dados.campo + dados.credito;
+    document.getElementById("totalGeral").innerText = formatarTempo(total);
 }
 
-function atualizarTela(){
+function confirmarTempo() {
+    let totalAdicional = (horas * 60) + minutos;
+    if (totalAdicional === 0) {
+        fecharModal();
+        return;
+    }
 
-    document.getElementById("campoValor")
-        .innerText =
-        formatarTempo(dados.campo);
-
-    document.getElementById("creditoValor")
-        .innerText =
-        formatarTempo(dados.credito);
-
-    let total =
-        dados.campo +
-        dados.credito;
-
-    document.getElementById("totalGeral")
-        .innerText =
-        formatarTempo(total);
-}
-
-function abrirReset(){
-
-    document.getElementById("resetModal")
-        .style.display = "flex";
-}
-
-function fecharReset(){
-
-    document.getElementById("resetModal")
-        .style.display = "none";
-}
-
-function zerarTudo(){
-
-    dados.campo = 0;
-
-    dados.credito = 0;
-
-    atualizarTela();
-
-    fecharReset();
-}
-
-let historico = [];
-
-function confirmarTempo(){
-
-    let total =
-        (horas * 60) + minutos;
-
-    dados[tipoAtual] += total;
+    dados[tipoAtual] += totalAdicional;
 
     let agora = new Date();
-
-    let data =
-        agora.toLocaleDateString('pt-BR');
-
-    let horaAtual =
-        agora.toLocaleTimeString('pt-BR', {
-            hour:'2-digit',
-            minute:'2-digit'
-        });
-
     let registro = {
-
         tipo: tipoAtual.toUpperCase(),
-
-        tempo:
-            formatarTempo(total),
-
-        data,
-
-        hora: horaAtual
+        tempo: formatarTempo(totalAdicional),
+        data: agora.toLocaleDateString('pt-BR'),
+        hora: agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
     };
 
     historico.unshift(registro);
-
+    
+    salvarNoNavegador(); // Grava no disco
     atualizarHistorico();
-
     atualizarTela();
-
     fecharModal();
 }
 
-function atualizarHistorico(){
-
-    let lista =
-        document.getElementById("listaHistorico");
-
+function atualizarHistorico() {
+    let lista = document.getElementById("listaHistorico");
     lista.innerHTML = "";
 
-    if(historico.length === 0){
-
-        lista.innerHTML =
-            "Nenhum registro ainda.";
-
+    if (historico.length === 0) {
+        lista.innerHTML = "Nenhum registro ainda.";
         return;
     }
 
     historico.forEach(item => {
-
         lista.innerHTML += `
-
             <div class="item-historico">
-
-                <strong>${item.tipo}</strong>
-                → +${item.tempo}
-
+                <strong>${item.tipo}</strong> → +${item.tempo}
                 <br>
-
-                ${item.data}
-                às
-                ${item.hora}
-
+                ${item.data} às ${item.hora}
             </div>
-
         `;
     });
 }
 
-historico = [];
+function abrirReset() {
+    document.getElementById("resetModal").style.display = "flex";
+}
 
-atualizarHistorico();
+function fecharReset() {
+    document.getElementById("resetModal").style.display = "none";
+}
 
-const CACHE_NAME = "controle-horas-v1";
-
-const FILES = [
-    "./",
-    "./index.html",
-    "./manifest.json",
-    "./sw.js",
-    "./icon-192.png",
-    "./icon-512.png"
-];
-
-self.addEventListener("install", e => {
-
-    e.waitUntil(
-        caches.open(CACHE_NAME).then(cache => {
-            return cache.addAll(FILES);
-        })
-    );
-});
-
-self.addEventListener("fetch", e => {
-
-    e.respondWith(
-        caches.match(e.request).then(res => {
-            return res || fetch(e.request);
-        })
-    );
-});
-
-if ("serviceWorker" in navigator) {
-
-    navigator.serviceWorker.register("sw.js")
-        .then(() => {
-            console.log("PWA ativado");
-        })
-        .catch(err => {
-            console.log("Erro no SW", err);
-        });
+function zerarTudo() {
+    dados.campo = 0;
+    dados.credito = 0;
+    historico = [];
+    
+    localStorage.clear(); // Limpa o banco de dados
+    
+    atualizarTela();
+    atualizarHistorico();
+    fecharReset();
 }
 
 function exibirMes() {
-    const meses = [
-        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-    ];
+    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     const data = new Date();
-    const nomeMes = meses[data.getMonth()];
-    document.getElementById("mesAtual").innerText = nomeMes;
+    document.getElementById("mesAtual").innerText = meses[data.getMonth()];
 }
 
-// Chame a função para ela rodar assim que a página carregar
+// Inicialização ao carregar a página
 exibirMes();
+atualizarTela();
+atualizarHistorico();
 
-
+// Lógica do Service Worker (Mantida conforme seu código)
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(err => console.log("Erro no SW", err));
+}
 </script>
 
 </body>
