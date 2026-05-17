@@ -1,647 +1,624 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="manifest" href="manifest.json">
-
-<meta name="theme-color" content="#0f172a">
-
-<link rel="apple-touch-icon" href="icon-192.png">
-
-<title>Controle de Horas</title>
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-
-    background:#000000;
-
-    color:white;
-
-    min-height:100vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    padding:20px;
-}
-
-.container{
-
-    width:380px;
-
-    max-width:100%;
-
-    background:#0d0d0d;
-
-    padding:25px;
-
-    border-radius:22px;
-
-    box-shadow:0 0 25px rgba(158, 159, 120, 0.697);
-}
-
-h1{
-
-    text-align:center;
-
-    margin-bottom:25px;
-}
-
-.cards{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:16px;
-}
-
-.card{
-
-    background:#262323;
-
-    border-radius:18px;
-
-    padding:18px;
-
-    transition:0.2s;
-    
-}
-
-.card:hover{
-
-    transform:scale(1.02);
-}
-
-.valor{
-
-    font-size:30px;
-
-    margin:15px 0;
-
-    font-weight:bold;
-}
-
-button{
-
-    width:100%;
-
-    border:none;
-
-    padding:12px;
-
-    border-radius:12px;
-
-    background:#1d1b1b;
-
-    color:white;
-
-    font-size:15px;
-
-    cursor:pointer;
-
-    transition:0.2s;
-}
-
-button:hover{
-
-    background:#000000;
-}
-
-.total{
-
-    margin-top:20px;
-
-    background:#000000;
-
-    border-radius:18px;
-
-    padding:20px;
-
-    text-align:center;
-}
-
-
-
-#totalGeral{
-
-    font-size:34px;
-
-    margin-top:10px;
-}
-
-.reset-btn{
-
-    margin-top:20px;
-
-    background:#ef4444;
-}
-
-.reset-btn:hover{
-
-    background:#dc2626;
-}
-
-.modal{
-
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(0,0,0,0.7);
-
-    display:none;
-
-    justify-content:center;
-
-    align-items:center;
-
-    padding:20px;
-}
-
-.modal-content{
-
-    width:320px;
-
-    max-width:100%;
-
-    background:#2b2c2e;
-
-    padding:25px;
-
-    border-radius:20px;
-
-    text-align:center;
-}
-
-
-.time-selector{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    gap:10px;
-
-    margin:20px 0;
-}
-
-.box{
-
-    flex:1;
-
-    min-width:0;
-}
-
-.controls{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:6px;
-
-    width:100%;
-}
-
-.box button{
-
-    width:38px;
-
-    height:38px;
-
-    min-width:38px;
-
-    padding:0;
-
-    font-size:20px;
-
-    flex-shrink:0;
-}
-
-.number{
-
-    width:45px;
-
-    text-align:center;
-
-    font-size:22px;
-
-    font-weight:bold;
-}
-.box h3{
-
-    margin-bottom:10px;
-}
-
-.controls{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:8px;
-
-    width:100%;
-}
-
-.box button{
-
-    min-width:40px;
-
-    height:40px;
-
-    padding:0;
-
-    flex-shrink:0;
-
-    font-size:22px;
-}
-
-.number{
-
-    width:50px;
-
-    text-align:center;
-
-    font-size:24px;
-
-    overflow:hidden;
-}
-
-.confirmar{
-
-    margin-top:15px;
-}
-
-.reset-buttons{
-
-    display:flex;
-
-    gap:10px;
-
-    margin-top:20px;
-}
-
-.historico{
-
-    margin-top:20px;
-
-    background:#131313;
-
-    border-radius:18px;
-
-    padding:20px;
-}
-
-.historico h2{
-
-    margin-bottom:15px;
-
-    text-align:center;
-}
-
-#listaHistorico{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:12px;
-
-    max-height:250px;
-
-    overflow-y:auto;
-}
-
-.item-historico{
-
-    background:#000000;
-
-    padding:12px;
-
-    border-radius:12px;
-
-    font-size:14px;
-
-    line-height:1.5;
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>Controle de Horas</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #05070f;
+      --surface: rgba(15, 23, 42, 0.9);
+      --surface-strong: rgba(15, 23, 42, 1);
+      --card: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-strong: #2563eb;
+      --danger: #f87171;
+      --shadow: 0 30px 60px rgba(0, 0, 0, 0.28);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.16), transparent 25%),
+        linear-gradient(180deg, #02040a 0%, #05070f 100%);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.18), transparent 12%),
+        radial-gradient(circle at left, rgba(59, 130, 246, 0.08), transparent 12%);
+      pointer-events: none;
+    }
+
+    .container {
+      width: min(460px, 100%);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(10, 14, 26, 0.95));
+      border: 1px solid rgba(148, 163, 184, 0.08);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+      backdrop-filter: blur(18px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .topbar span {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 0.8rem;
+    }
+
+    .title {
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      letter-spacing: -0.04em;
+    }
+
+    .cards {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 22px;
+      display: grid;
+      gap: 12px;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.28);
+    }
+
+    .card h2 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+    }
+
+    .valor {
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    button {
+      background: #111827;
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card button,
+    .confirmar,
+    .reset-btn,
+    .modal button,
+    .reset-buttons button {
+      padding: 14px 16px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
+
+    .card button:hover,
+    .confirmar:hover,
+    .reset-btn:hover,
+    .modal button:hover,
+    .reset-buttons button:hover {
+      background: #1f2937;
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    .total {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.08);
+      border-radius: 24px;
+      padding: 22px;
+      text-align: center;
+      display: grid;
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .total h2 {
+      font-size: 1rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    #totalGeral {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+    }
+
+    .reset-btn {
+      background: #111827;
+      color: var(--text);
+      padding: 14px 16px;
+    }
+
+    .reset-btn:hover {
+      background: #1f2937;
+    }
+
+    .historico {
+      margin-top: 24px;
+      border-radius: 24px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.08);
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .historico h2 {
+      font-size: 1rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    #listaHistorico {
+      display: grid;
+      gap: 12px;
+      max-height: 260px;
+      overflow-y: auto;
+      min-height: 88px;
+      padding-right: 2px;
+    }
+
+    .item-historico {
+      background: rgba(7, 10, 18, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.08);
+      border-radius: 18px;
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .item-historico span {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .item-historico strong {
+      color: #f8fafc;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(3, 7, 16, 0.75);
+      z-index: 20;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      width: min(400px, 100%);
+      background: rgba(15, 23, 42, 0.98);
+      border-radius: 28px;
+      padding: 28px;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      box-shadow: var(--shadow);
+      text-align: center;
+      display: grid;
+      gap: 20px;
+    }
+
+    .modal-content h2 {
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+    }
+
+    .time-selector {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .box {
+      background: rgba(7, 10, 18, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.08);
+      border-radius: 22px;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .box h3 {
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .box button {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      background: #111827;
+      color: var(--text);
+      font-size: 1.35rem;
+    }
+
+    .box button:hover {
+      background: #1f2937;
+      transform: translateY(-1px);
+    }
+
+    .number {
+      width: 56px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .confirmar {
+      background: #111827;
+      color: var(--text);
+      padding: 14px 16px;
+      font-weight: 700;
+    }
+
+    .confirmar:hover {
+      background: #1f2937;
+      transform: translateY(-1px);
+    }
+
+    .reset-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .reset-buttons button {
+      flex: 1 1 140px;
+      padding: 12px 14px;
+      background: #111827;
+      color: var(--text);
+    }
+
+    .reset-buttons button:last-child {
+      background: #1f2937;
+      color: var(--text);
+    }
+
+    .reset-buttons button:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 420px) {
+      .container {
+        padding: 20px;
+      }
+
+      .time-selector {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
-
-<div class="container">
-
-    <h1>Controle de Horas</h1>
-<!-- Adicione a linha abaixo -->
-<p id="mesAtual" style="text-align: center; margin-top: -20px; margin-bottom: 25px; color: #94a3b8; text-transform: uppercase; font-weight: bold;"></p>
-
-
-<div class="cards">
-    <div class="card">
-        <h2>CAMPO</h2>
-        <div class="valor" id="campoValor">00:00</div>
-        <button onclick="abrirModal('campo')">Adicionar</button>
+  <div class="container">
+    <div class="topbar">
+      <span id="mesAtual">Carregando...</span>
+      <h1 class="title">Controle de Horas</h1>
     </div>
 
-    <div class="card">
-        <h2>CRÉDITO</h2>
-        <div class="valor" id="creditoValor">00:00</div>
-        <button onclick="abrirModal('credito')">Adicionar</button>
-    </div>
-</div>
-
-    <div class="historico">
-
-    <h2>Histórico</h2>
-
-    <div id="listaHistorico">
-        Nenhum registro ainda.
-    </div>
+    <section class="cards">
+      <article class="card">
+        <div>
+          <h2>Campo</h2>
+          <p class="valor" id="campoValor">00:00</p>
         </div>
+        <button type="button" data-type="campo">Adicionar</button>
+      </article>
 
-
-    <div class="total">
-
-        <h2>Total Geral</h2>
-
-        <div id="totalGeral">
-            00:00
+      <article class="card">
+        <div>
+          <h2>Crédito</h2>
+          <p class="valor" id="creditoValor">00:00</p>
         </div>
+        <button type="button" data-type="credito">Adicionar</button>
+      </article>
+    </section>
 
-        <button class="reset-btn" onclick="abrirReset()">
-            Zerar Tudo
-        </button>
+    <section class="historico">
+      <h2>Histórico</h2>
+      <div id="listaHistorico">Nenhum registro ainda.</div>
+    </section>
 
+    <section class="total">
+      <h2>Total Geral</h2>
+      <div id="totalGeral">00:00</div>
+      <button type="button" class="reset-btn">Zerar Tudo</button>
+    </section>
+  </div>
 
-
-</div>
-
-</div>
-
-
-
-<!-- MODAL ADICIONAR -->
-
-<div class="modal" id="modal">
-
+  <div class="modal" id="modal">
     <div class="modal-content">
-
-        <h2>Adicionar Tempo</h2>
-
-        <div class="time-selector">
-
-            <div class="box">
-
-                <h3>Horas</h3>
-
-                <div class="controls">
-
-                    <button onclick="alterarHora(-1)">
-                        -
-                    </button>
-
-                    <div class="number" id="horas">
-                        0
-                    </div>
-
-                    <button onclick="alterarHora(1)">
-                        +
-                    </button>
-
-                </div>
-
-            </div>
-
-            <div class="box">
-
-                <h3>Min</h3>
-
-                <div class="controls">
-
-                    <button onclick="alterarMin(-5)">
-                        -
-                    </button>
-
-                    <div class="number" id="minutos">
-                        0
-                    </div>
-
-                    <button onclick="alterarMin(5)">
-                        +
-                    </button>
-
-                </div>
-
-            </div>
-
+      <h2>Adicionar Tempo</h2>
+      <div class="time-selector">
+        <div class="box">
+          <h3>Horas</h3>
+          <div class="controls">
+            <button type="button" data-action="hour" data-value="-1">-</button>
+            <span class="number" id="horas">0</span>
+            <button type="button" data-action="hour" data-value="1">+</button>
+          </div>
         </div>
-
-        <button class="confirmar" onclick="confirmarTempo()">
-            Confirmar
-        </button>
-
+        <div class="box">
+          <h3>Minutos</h3>
+          <div class="controls">
+            <button type="button" data-action="minute" data-value="-5">-</button>
+            <span class="number" id="minutos">0</span>
+            <button type="button" data-action="minute" data-value="5">+</button>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="confirmar">Confirmar</button>
     </div>
+  </div>
 
-</div>
-
-<!-- MODAL RESET -->
-
-<div class="modal" id="resetModal">
-
+  <div class="modal" id="resetModal">
     <div class="modal-content">
-
-        <h2>Deseja zerar tudo?</h2>
-
-        <p style="margin:20px 0;">
-            Essa ação não poderá ser desfeita.
-        </p>
-
-        <div class="reset-buttons">
-
-            <button onclick="fecharReset()">
-                Cancelar
-            </button>
-
-            <button
-                style="background:#ef4444;"
-                onclick="zerarTudo()"
-            >
-                Confirmar
-            </button>
-
-        </div>
-
+      <h2>Deseja zerar tudo?</h2>
+      <p>Essa ação não poderá ser desfeita.</p>
+      <div class="reset-buttons">
+        <button type="button" class="cancel-reset">Cancelar</button>
+        <button type="button" class="confirm-reset">Confirmar</button>
+      </div>
     </div>
+  </div>
 
-</div>
-
-<script>
-// Tenta carregar dados salvos ou inicia do zero
-let dados = JSON.parse(localStorage.getItem('controle_dados')) || {
-    campo: 0,
-    credito: 0
-};
-
-let historico = JSON.parse(localStorage.getItem('controle_historico')) || [];
-
-let tipoAtual = "";
-let horas = 0;
-let minutos = 0;
-
-// Função para salvar tudo no localStorage
-function salvarNoNavegador() {
-    localStorage.setItem('controle_dados', JSON.stringify(dados));
-    localStorage.setItem('controle_historico', JSON.stringify(historico));
-}
-
-function abrirModal(tipo) {
-    tipoAtual = tipo;
-    horas = 0;
-    minutos = 0;
-    atualizarModal();
-    document.getElementById("modal").style.display = "flex";
-}
-
-function alterarHora(valor) {
-    horas += valor;
-    if (horas < 0) horas = 0;
-    atualizarModal();
-}
-
-function alterarMin(valor) {
-    minutos += valor;
-    if (minutos < 0) minutos = 0;
-    if (minutos > 55) minutos = 55;
-    atualizarModal();
-}
-
-function atualizarModal() {
-    document.getElementById("horas").innerText = horas;
-    document.getElementById("minutos").innerText = minutos;
-}
-
-function fecharModal() {
-    document.getElementById("modal").style.display = "none";
-}
-
-function formatarTempo(totalMin) {
-    let h = Math.floor(totalMin / 60);
-    let m = totalMin % 60;
-    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-}
-
-function atualizarTela() {
-    document.getElementById("campoValor").innerText = formatarTempo(dados.campo);
-    document.getElementById("creditoValor").innerText = formatarTempo(dados.credito);
-    
-    let total = dados.campo + dados.credito;
-    document.getElementById("totalGeral").innerText = formatarTempo(total);
-}
-
-function confirmarTempo() {
-    let totalAdicional = (horas * 60) + minutos;
-    if (totalAdicional === 0) {
-        fecharModal();
-        return;
-    }
-
-    dados[tipoAtual] += totalAdicional;
-
-    let agora = new Date();
-    let registro = {
-        tipo: tipoAtual.toUpperCase(),
-        tempo: formatarTempo(totalAdicional),
-        data: agora.toLocaleDateString('pt-BR'),
-        hora: agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+  <script>
+    const state = {
+      currentType: 'campo',
+      hours: 0,
+      minutes: 0,
+      entries: []
     };
 
-    historico.unshift(registro);
-    
-    salvarNoNavegador(); // Grava no disco
-    atualizarHistorico();
-    atualizarTela();
-    fecharModal();
-}
+    const elements = {
+      mesAtual: document.getElementById('mesAtual'),
+      campoValor: document.getElementById('campoValor'),
+      creditoValor: document.getElementById('creditoValor'),
+      totalGeral: document.getElementById('totalGeral'),
+      listaHistorico: document.getElementById('listaHistorico'),
+      modal: document.getElementById('modal'),
+      resetModal: document.getElementById('resetModal'),
+      horas: document.getElementById('horas'),
+      minutos: document.getElementById('minutos'),
+      adicionarBotoes: document.querySelectorAll('[data-type]'),
+      resetBtn: document.querySelector('.reset-btn'),
+      confirmBtn: document.querySelector('.confirmar'),
+      cancelResetBtn: document.querySelector('.cancel-reset'),
+      confirmResetBtn: document.querySelector('.confirm-reset'),
+      modalButtons: document.querySelectorAll('[data-action]')
+    };
 
-function atualizarHistorico() {
-    let lista = document.getElementById("listaHistorico");
-    lista.innerHTML = "";
+    const formatTime = totalMinutes => {
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    };
 
-    if (historico.length === 0) {
-        lista.innerHTML = "Nenhum registro ainda.";
+    const updateTotals = () => {
+      const campoTotal = state.entries
+        .filter(entry => entry.type === 'campo')
+        .reduce((sum, entry) => sum + entry.minutes, 0);
+
+      const creditoTotal = state.entries
+        .filter(entry => entry.type === 'credito')
+        .reduce((sum, entry) => sum + entry.minutes, 0);
+
+      elements.campoValor.textContent = formatTime(campoTotal);
+      elements.creditoValor.textContent = formatTime(creditoTotal);
+      elements.totalGeral.textContent = formatTime(campoTotal + creditoTotal);
+    };
+
+    const createHistoryItem = entry => {
+      const item = document.createElement('div');
+      item.className = 'item-historico';
+      item.innerHTML = `
+        <div><strong>${entry.type === 'campo' ? 'Campo' : 'Crédito'}</strong> — ${formatTime(entry.minutes)}</div>
+        <span>${entry.label} • ${entry.timestamp}</span>
+      `;
+      return item;
+    };
+
+    const renderHistory = () => {
+      elements.listaHistorico.innerHTML = '';
+      if (state.entries.length === 0) {
+        elements.listaHistorico.textContent = 'Nenhum registro ainda.';
         return;
-    }
+      }
 
-    historico.forEach(item => {
-        lista.innerHTML += `
-            <div class="item-historico">
-                <strong>${item.tipo}</strong> → +${item.tempo}
-                <br>
-                ${item.data} às ${item.hora}
-            </div>
-        `;
+      state.entries.slice().reverse().forEach(entry => {
+        elements.listaHistorico.appendChild(createHistoryItem(entry));
+      });
+    };
+
+    const saveState = () => {
+      localStorage.setItem('controleDeHoras', JSON.stringify(state.entries));
+    };
+
+    const loadState = () => {
+      const saved = localStorage.getItem('controleDeHoras');
+      if (saved) {
+        try {
+          state.entries = JSON.parse(saved);
+        } catch (error) {
+          state.entries = [];
+        }
+      }
+    };
+
+    const openModal = type => {
+      state.currentType = type;
+      state.hours = 0;
+      state.minutes = 0;
+      elements.horas.textContent = '0';
+      elements.minutos.textContent = '0';
+      elements.modal.classList.add('show');
+      elements.modal.querySelector('h2').textContent = `Adicionar ${type === 'campo' ? 'Campo' : 'Crédito'}`;
+    };
+
+    const closeModal = () => elements.modal.classList.remove('show');
+    const openReset = () => elements.resetModal.classList.add('show');
+    const closeReset = () => elements.resetModal.classList.remove('show');
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    const adjustTime = (field, delta) => {
+      if (field === 'hour') {
+        state.hours = clamp(state.hours + delta, 0, 24);
+      } else {
+        state.minutes = clamp(state.minutes + delta, 0, 55);
+      }
+      elements.horas.textContent = state.hours;
+      elements.minutos.textContent = state.minutes;
+    };
+
+    const confirmarTempo = () => {
+      if (state.hours === 0 && state.minutes === 0) return;
+
+      const totalMinutes = state.hours * 60 + state.minutes;
+      const date = new Date();
+      state.entries.push({
+        type: state.currentType,
+        minutes: totalMinutes,
+        label: `${state.hours}h ${state.minutes}m`,
+        timestamp: date.toLocaleString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      });
+
+      saveState();
+      renderHistory();
+      updateTotals();
+      closeModal();
+    };
+
+    const zerarTudo = () => {
+      state.entries = [];
+      saveState();
+      renderHistory();
+      updateTotals();
+      closeReset();
+    };
+
+    const setMonthLabel = () => {
+      const now = new Date();
+      elements.mesAtual.textContent = now.toLocaleDateString('pt-BR', {
+        month: 'long',
+        year: 'numeric'
+      });
+    };
+
+    elements.adicionarBotoes.forEach(button => {
+      button.addEventListener('click', () => openModal(button.dataset.type));
     });
-}
 
-function abrirReset() {
-    document.getElementById("resetModal").style.display = "flex";
-}
+    elements.modalButtons.forEach(button => {
+      button.addEventListener('click', () => adjustTime(button.dataset.action, Number(button.dataset.value)));
+    });
 
-function fecharReset() {
-    document.getElementById("resetModal").style.display = "none";
-}
+    elements.modal.addEventListener('click', event => {
+      if (event.target === elements.modal) {
+        closeModal();
+      }
+    });
 
-function zerarTudo() {
-    dados.campo = 0;
-    dados.credito = 0;
-    historico = [];
-    
-    localStorage.clear(); // Limpa o banco de dados
-    
-    atualizarTela();
-    atualizarHistorico();
-    fecharReset();
-}
+    elements.resetModal.addEventListener('click', event => {
+      if (event.target === elements.resetModal) {
+        closeReset();
+      }
+    });
 
-function exibirMes() {
-    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    const data = new Date();
-    document.getElementById("mesAtual").innerText = meses[data.getMonth()];
-}
+    elements.confirmBtn.addEventListener('click', confirmarTempo);
+    elements.resetBtn.addEventListener('click', openReset);
+    elements.cancelResetBtn.addEventListener('click', closeReset);
+    elements.confirmResetBtn.addEventListener('click', zerarTudo);
 
-// Inicialização ao carregar a página
-exibirMes();
-atualizarTela();
-atualizarHistorico();
+    window.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        closeModal();
+        closeReset();
+      }
+    });
 
-// Lógica do Service Worker (Mantida conforme seu código)
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").catch(err => console.log("Erro no SW", err));
-}
-</script>
-
+    loadState();
+    setMonthLabel();
+    renderHistory();
+    updateTotals();
+  </script>
 </body>
+
 </html>
